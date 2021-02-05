@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Profile;
 use App\Models\User;
 use App\Models\BankAccount;
@@ -19,6 +19,31 @@ class UserController extends Controller
     public function index()
     {
         //
+    }
+
+
+    public function artists(){
+
+        $data['title'] = 'Artist | Manage Artist';
+        $data['activeTab'] = 11;
+        return view('admin/user/artists',$data);
+
+    }
+
+
+    public function clients(){
+
+        $data['title'] = 'Clients | Manage Clients';
+        return view('admin/user/clients',$data);
+
+    }
+
+    public function churchAdmins(){
+
+        $data['title'] = 'Church Admins | Manage Church Admins';
+        $data['activeTab'] = 11;
+        return view('admin/user/churchAdmins',$data);
+
     }
 
 
@@ -44,11 +69,10 @@ class UserController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Artists | Active Artists ";
+       // $data['title'] = "Artists | Active Artists ";
         $data['activeArtists'] = User::where([['is_active','1'],['role','artist']])->with('profile')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        //return $data['activeArtists'];
-
-        return view('admin/user/activeArtists',$data);
+        //return view('admin/user/activeArtists',$data);
+        return view('admin/user/activeArtists', $data)->render();
     }
 
 
@@ -73,11 +97,10 @@ class UserController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Artists | Deactivated Artists ";
+       //$data['title'] = "Artists | Deactivated Artists ";
         $data['deactivatedArtists'] = User::where([['is_active','0'],['role','artist']])->with('profile')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        //return $data['activeArtists'];
-
-        return view('admin/user/deactivatedArtists',$data);
+       //return view('admin/user/deactivatedArtists',$data);
+       return view('admin/user/deactivatedArtists', $data)->render();
 
     }
 
@@ -102,10 +125,10 @@ class UserController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Clients | Active Clients ";
+        //$data['title'] = "Clients | Active Clients ";
         $data['activeClients'] = User::where([['is_active','1'],['role','client']])->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
 
-        return view('admin/user/activeClients',$data);
+        return view('admin/user/activeClients',$data)->render();
 
     }
 
@@ -129,10 +152,10 @@ class UserController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Clients | Deactivated Clients ";
+        //$data['title'] = "Clients | Deactivated Clients ";
         $data['deactivatedClients'] = User::where([['is_active','0'],['role','client']])->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
 
-        return view('admin/user/deactivatedClients',$data);
+        return view('admin/user/deactivatedClients',$data)->render();
 
     }
 
@@ -256,10 +279,11 @@ class UserController extends Controller
 
     public function registerArtist(){
 
-        $data['title'] = 'Artist | Register Artist';
+        $data['title'] = 'Artist | Manage Artist';
         return view('admin/user/registerArtist',$data);
 
     }
+
 
 
     public function addArtist(Request $request){
@@ -284,7 +308,7 @@ class UserController extends Controller
                 $user->name = $request->input('first_name').' '.$request->input('last_name');
                 $user->email = $request->input('email');
                 $user->phone = $request->input('phone');
-                $user->password = Crypt::encrypt($password);
+                $user->password = Hash::make($password);
                 $user->role = 'artist';
                 $user->created_by = 1; // to be changed with session done
 
@@ -307,7 +331,7 @@ class UserController extends Controller
                             $code = 201;
                             $type = 'successRegistering';
                             Session::flash($type, $msg);
-                            return redirect('User/activeArtists/0');
+                            return back();
                         }else{
 
                             $profileDelete = User::where('user_id',$user->id)->delete();
@@ -392,7 +416,7 @@ class UserController extends Controller
                 $user = new User();
                 $user->email = $request->input('email');
                 $user->phone = $request->input('phone');
-                $user->password = Crypt::encrypt($password);
+                $user->password = Hash::make($password);
                 $user->role = 'church_admin';
                 $user->created_by = 1; // to be changed with session done
 
@@ -410,8 +434,7 @@ class UserController extends Controller
                             $code = 201;
                             $type = 'successRegistering';
                             Session::flash($type, $msg);
-                            return redirect('User/activeChurchAdministrators');
-
+                            return back();
                     }else{
 
                         $userDelete = User::where('user_id',$user->id)->delete();
@@ -468,12 +491,10 @@ class UserController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Church Administrators | Active church Administrators ";
+        //$data['title'] = "Church Administrators | Active church Administrators ";
         $data['activeChurchAdmins'] = User::where([['is_active','1'],['role','church_admin']])->with('profile')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        //return $data['activeArtists'];
 
-        return view('admin/user/activeChurchAdmins',$data);
-
+        return view('admin/user/activeChurchAdmins',$data)->render();
 
     }
 
@@ -498,11 +519,10 @@ class UserController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Church Administrators | Deactivated church Administrators ";
+        //$data['title'] = "Church Administrators | Deactivated church Administrators ";
         $data['deactivatedChurchAdmins'] = User::where([['is_active','0'],['role','church_admin']])->with('profile')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        //return $data['activeArtists'];
 
-        return view('admin/user/deactivatedChurchAdmins',$data);
+        return view('admin/user/deactivatedChurchAdmins',$data)->render();
 
     }
 
@@ -552,6 +572,62 @@ class UserController extends Controller
     {
         $totalDeactivatedChurchAdministrators = User::where([['is_active','0'],['role','church_admin']])->count();
         return $totalDeactivatedChurchAdministrators;
+    }
+
+    public function searchActiveArtist($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchActive'] = true;
+        $data['searchedArtists'] = User::with('profile')->where([['is_active','1'],['role','artist'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','1'],['role','artist'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        //$data['searchedArtists'] = User::where()->with('profile')->where([['is_active','1'],['role','artist'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','1'],['role','artist'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        return view('admin/user/searchArtist', $data)->render();
+    }
+
+    public function searchDeactivatedArtist($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchActive'] = false;
+        $data['searchedArtists'] = User::with('profile')->where([['is_active','0'],['role','artist'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','0'],['role','artist'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        //$data['searchedArtists'] = User::with('profile')->where([['is_active','0'],['role','artist'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','0'],['role','artist'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        return view('admin/user/searchArtist', $data)->render();
+    }
+
+
+    public function searchActiveClient($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchActive'] = true;
+        $data['searchedClients'] = User::where([['is_active','1'],['role','client'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','1'],['role','client'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        //$data['searchedClients'] = User::where([['is_active','1'],['role','client'],])->orderBy('created_at', 'desc')->get();
+        return view('admin/user/searchClient', $data)->render();
+    }
+
+    public function searchDeactivatedClient($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchActive'] = false;
+        $data['searchedClients'] = User::where([['is_active','0'],['role','client'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','0'],['role','client'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        //$data['searchedArtists'] = User::with('profile')->where([['is_active','0'],['role','artist'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','0'],['role','artist'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        return view('admin/user/searchClient', $data)->render();
+    }
+
+
+    public function searchActiveChurchAdmin($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchActive'] = true;
+        $data['searchedChurchAdmins'] = User::with('profile')->where([['is_active','1'],['role','church_admin'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','1'],['role','church_admin'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        //$data['searchedClients'] = User::where([['is_active','1'],['role','client'],])->orderBy('created_at', 'desc')->get();
+        return view('admin/user/searchChurchAdmin', $data)->render();
+    }
+
+    public function searchDeactivatedChurchAdmin($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchActive'] = false;
+        $data['searchedChurchAdmins'] = User::with('profile')->where([['is_active','0'],['role','church_admin'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','0'],['role','church_admin'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        //$data['searchedArtists'] = User::with('profile')->where([['is_active','0'],['role','artist'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','0'],['role','artist'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        return view('admin/user/searchChurchAdmin', $data)->render();
     }
 
 }

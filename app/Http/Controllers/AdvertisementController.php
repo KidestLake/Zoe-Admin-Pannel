@@ -28,6 +28,25 @@ class AdvertisementController extends Controller
         return view('admin/advertisement/activeAdvertisements', $data);
     }
 
+    public function allDeactivatedAdvertisements()
+    {
+
+        $data['title'] = "Advertisement | Deactivated Advertisements ";
+        $data['deactivatedAdvertisements'] = Advertisement::where('is_active', false)->orderBy('created_at', 'desc')->get();
+        return view('admin/advertisement/deactivatedAdvertisements', $data);
+    }
+
+
+
+    public function getAdvertisements()
+    {
+
+        $data['title'] = 'Advertisement | Manage Advertisement';
+        $data['activeTab'] = 11;
+        return view('admin/advertisement/advertisements', $data);
+    }
+
+
     public function activeAdvertisements($offset, $pageNumber = null)
     {
         $data['offset'] = $offset;
@@ -41,18 +60,13 @@ class AdvertisementController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Advertisement | Active Advertisements ";
         $data['activeAdvertisements'] = Advertisement::where('is_active', true)->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        return view('admin/advertisement/activeAdvertisements', $data);
+        //return "<h2>Hey from controller</h2>";
+        return view('admin/advertisement/activeAdvertisements', $data)->render();
+
+
     }
 
-    public function allDeactivatedAdvertisements()
-    {
-
-        $data['title'] = "Advertisement | Deactivated Advertisements ";
-        $data['deactivatedAdvertisements'] = Advertisement::where('is_active', false)->orderBy('created_at', 'desc')->get();
-        return view('admin/advertisement/deactivatedAdvertisements', $data);
-    }
 
     public function deactivatedAdvertisements($offset, $pageNumber = null)
     {
@@ -67,19 +81,10 @@ class AdvertisementController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Advertisement | Deactivated Advertisements ";
         $data['deactivatedAdvertisements'] = Advertisement::where('is_active', false)->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        return view('admin/advertisement/deactivatedAdvertisements', $data);
+        return view('admin/advertisement/deactivatedAdvertisements', $data)->render();
     }
 
-
-    public function addAdvertisement()
-    {
-        //check if admin here................
-
-        $data['title'] = 'Advertisement | Add Advertisement';
-        return view('admin/advertisement/addAdvertisement', $data);
-    }
 
     public function create(Request $request)
     {
@@ -154,7 +159,6 @@ class AdvertisementController extends Controller
                         }
                     }
 
-
                     $advertisement->owner_name = $request->input('owner_name');
                     $advertisement->start_date = $request->input('start_date');
                     $advertisement->banner_image = $file_path;
@@ -164,14 +168,14 @@ class AdvertisementController extends Controller
                     if ($advertisement->save()) {
                         $msg = "Advertisement Saved Successfully!";
                         $code = 201;
-                        $data['advertisement'] = $advertisement;
                         $type = 'success';
                         Session::flash($type, $msg);
-                        return redirect('Advertisement/activeAdvertisements/0');
+                        $data['title'] = 'Advertisement | Manage Advertisement';
+                        $data['activeTab'] = 22;
+                        return view('admin/advertisement/advertisements', $data);
                     } else {
                         $code = 500;
                         $msg = "An error occured while creating advertisement. Please try again.";
-
                         $type = 'error';
                         Session::flash($type, $msg);
                         $request->flash();
@@ -193,7 +197,7 @@ class AdvertisementController extends Controller
                 $type = 'error';
                 Session::flash($type, $msg);
                 $request->flash();
-                return redirect('form')->withInput();
+                return back()->withInput();
             }
         } catch (Exception $ex) {
             $msg = $ex->getMessage();
@@ -218,9 +222,9 @@ class AdvertisementController extends Controller
 
     public function updateAdvertisement($id)
     {
-        $data['title'] = 'Advertisement | Update Advertisement';
+        //$data['title'] = 'Advertisement | Update Advertisement';
         $data['advertisement'] = Advertisement::find($id);
-        return view('admin/advertisement/updateAdvertisement', $data);
+        return view('admin/advertisement/updateAdvertisement', $data)->render();
     }
 
     public function activateAdvertisement($id)
@@ -351,15 +355,22 @@ class AdvertisementController extends Controller
                                 }
                             }
 
-                            $msg = "Advertisement Updated Successfully!";
-                            if ($activationStatus == true) {
-                                $msg = "Advertisement activated Successfully!";
-                            }
+                            $msg = "Advertisement Updated Successfully!!";
                             $code = 200;
                             $data['advertisement'] = $advertisement;
                             $type = 'success';
                             Session::flash($type, $msg);
-                            return redirect('Advertisement/activeAdvertisements/0');
+                            if ($activationStatus == true) {
+                                $msg = "Advertisement activated Successfully!";
+                                $data['title'] = 'Advertisement | Manage Advertisement';
+                                $data['activeTab'] = 33;
+                                return view('admin/advertisement/advertisements', $data);
+                            }else{
+                                $data['title'] = 'Advertisement | Manage Advertisement';
+                                $data['activeTab'] = 22;
+                                return view('admin/advertisement/advertisements', $data);
+                            }
+
                         } else {
                             $code = 500;
                             $msg = "An error occured while updating advertisement. Please try again.";
@@ -393,12 +404,25 @@ class AdvertisementController extends Controller
                     $advertisement->banner_image = $advertisement['banner_image'];
 
                     if ($advertisement->save()) {
-                        $msg = "Advertisement Updated Successfully!!";
+                        $msg = "Advertisement updated Successfully!!";
                         $code = 200;
                         $data['advertisement'] = $advertisement;
                         $type = 'success';
                         Session::flash($type, $msg);
-                        return redirect('Advertisement/activeAdvertisements/0');
+                        if ($activationStatus == true) {
+                            $msg = "Advertisement activated Successfully!";
+                            $data['title'] = 'Advertisement | Manage Advertisement';
+                            $data['activeTab'] = 33;
+                            return view('admin/advertisement/advertisements', $data);
+                        }else{
+                            $data['title'] = 'Advertisement | Manage Advertisement';
+                            $data['activeTab'] = 22;
+                            return view('admin/advertisement/advertisements', $data);
+                        }
+
+                        //return redirect('advertisements/getAdvertisements');
+
+
                     } else {
                         $code = 500;
                         $msg = "An error occured while updating advertisement. Please try again.";
@@ -597,134 +621,22 @@ class AdvertisementController extends Controller
 
     public function searchActiveAdvertisement($searchInput)
     {
-        $result = array('data' => array());
-
-        $searchWord =trim($searchInput);
-
-
-        $data = Advertisement::where([['is_active','1'],['owner_name', 'LIKE', "{$searchWord}"]])->orWhere([['is_active','1'],['phone', 'LIKE', "{$searchWord}"]])->orderBy('created_at', 'desc')->get();
-        foreach ($data as $key => $value) {
-
-            $toFormatStartDate = new DateTime($value['start_date']);
-            $startDate = $toFormatStartDate->format('M j, Y');
-
-            $toFormatEndDate = new DateTime($value['end_date']);
-            $endDate = $toFormatEndDate->format('M j, Y');
-
-            $toCreatedAt = new DateTime($value['created_at']);
-            $createdDate = $toCreatedAt->format('M j, Y');
-
-
-            $dropDownMenu = '';
-
-			$dropDownMenu .= '<div class="dropdown">
-                            <button
-                                class="btn btn-secondary btn-sm btn-flat dropdown-toggle"
-                                type="button" data-toggle="dropdown">Menu<span
-                                    class="caret"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right p-3">
-                                <li><a class="text-secondary"
-                                        href="url(Advertisement/updateAdvertisement/)'.$value['id'].'">
-                                        <span class="fas fa-edit mr-2"></span> Edit</a>
-                                </li>
-                                <li><a href="#" class="text-secondary"
-                                        data-toggle="modal"
-                                        data-target="#deactivateAdvertisementModal" onclick="deactivateModalOpen('.$value['id'].')">
-                                        <span class="fas fa-times mr-2"></span>
-                                        Deactivate</a></li>
-                                <li><a href="#" class="text-secondary"
-                                        data-toggle="modal"
-                                        data-target="#deleteAdvertisementModal" onclick="deleteModalOpen('.$value['id'].')">
-                                        <span class="fas fa-trash-alt mr-2"></span>
-                                        Delete</a></li>
-                            </ul>
-                        </div>';
-
-            $url = '';
-            if($value['url']!=null){
-                $url = '<a href="'.$value['url'].'" class="text-blue" target="_blank">Open</a>';
-            };
-
-            $result['data'][$key] = array(
-                "DT_RowId"=>'tr'.$value['id'],
-                $key+1,
-                $value['owner_name'],
-                $value['phone'],
-                '<a href="#" class="text-blue view-image" data-images="'.$value['banner_image'].'">View Banner</a>',
-                $startDate,
-                $endDate,
-                $url ,
-                $createdDate,
-                $dropDownMenu,
-
-            );
-        } // /foreach
-
-        echo json_encode($result);
+        $data['searchInput'] = $searchInput;
+        $data['searchActive'] = true;
+        $data['searchedAdvertisements'] = Advertisement::where([['is_active','1'],['owner_name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','1'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        return view('admin/advertisement/searchAdvertisement', $data)->render();
     }
 
     public function searchDeactivatedAdvertisement($searchInput)
     {
-        $result = array('data' => array());
 
-        $searchWord =trim($searchInput);
-
-
-        $data = Advertisement::where([['is_active','0'],['owner_name', 'LIKE', "{$searchWord}"]])->orWhere([['is_active','1'],['phone', 'LIKE', "{$searchWord}"]])->orderBy('created_at', 'desc')->get();
-        foreach ($data as $key => $value) {
-
-            $toFormatStartDate = new DateTime($value['start_date']);
-            $startDate = $toFormatStartDate->format('M j, Y');
-
-            $toFormatEndDate = new DateTime($value['end_date']);
-            $endDate = $toFormatEndDate->format('M j, Y');
-
-            $toCreatedAt = new DateTime($value['created_at']);
-            $createdDate = $toCreatedAt->format('M j, Y');
-
-
-            $dropDownMenu = '';
-
-			$dropDownMenu .= '<div class="dropdown">
-                            <button
-                                class="btn btn-secondary btn-sm btn-flat dropdown-toggle"
-                                type="button" data-toggle="dropdown">Menu<span
-                                    class="caret"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right p-3">
-                                <li><a class="text-secondary"
-                                        href="url(Advertisement/activateAdvertisement/)'.$value['id'].'">
-                                        <span class="fas fa-check mr-2"></span> Activate</a>
-                                </li>
-
-                                <li><a href="#" class="text-secondary"
-                                        data-toggle="modal"
-                                        data-target="#deleteAdvertisementModal" onclick="deleteModalOpen('.$value['id'].')">
-                                        <span class="fas fa-trash-alt mr-2"></span>
-                                        Delete</a></li>
-                            </ul>
-                        </div>';
-
-            $url = '';
-            if($value['url']!=null){
-                $url = '<a href="'.$value['url'].'" class="text-blue" target="_blank">Open</a>';
-            };
-
-            $result['data'][$key] = array(
-                $key+1,
-                $value['owner_name'],
-                $value['phone'],
-                '<a href="#" class="text-blue view-image" data-images="'.$value['banner_image'].'">View Banner</a>',
-                $startDate,
-                $endDate,
-                $url ,
-                $createdDate,
-                $dropDownMenu,
-
-            );
-        } // /foreach
-
-        echo json_encode($result);
+        $data['searchInput'] = $searchInput;
+        $data['searchActive'] = false;
+        $data['searchedAdvertisements'] = Advertisement::where([['is_active','0'],['owner_name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','0'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        return view('admin/advertisement/searchAdvertisement', $data)->render();
     }
+
+
 }
 
 

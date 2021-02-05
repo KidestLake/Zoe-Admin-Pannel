@@ -10,6 +10,7 @@ use App\Models\PendingArtist;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
 class PendingArtistController extends Controller
@@ -44,7 +45,7 @@ class PendingArtistController extends Controller
             $pendingArtist->last_name = $request->input('last_name');
             $pendingArtist->email = $request->input('email');
             $pendingArtist->phone = $request->input('phone');
-            $pendingArtist->password = Crypt::encrypt($password);
+            $pendingArtist->password = Hash::make($password);
             $pendingArtist->location = $request->input('location');
             $pendingArtist->bank_name = $request->input('bank_name');
             $pendingArtist->account_number = $request->input('account_number');
@@ -147,10 +148,10 @@ class PendingArtistController extends Controller
 
     public function allPendingArtists()
     {
-        $data['title'] = "Artists | Pending Artists ";
+        //$data['title'] = "Artists | Pending Artists ";
         $data['totalPendingArtists'] = $this->totalPendingArtists();
         $data['pendingArtists'] = PendingArtist::orderBy('created_at', 'desc')->get();
-        return view('admin/user/pendingArtists', $data);
+        return view('admin/user/pendingArtists', $data)->render();
     }
 
     public function pendingArtists($offset, $pageNumber = null)
@@ -187,6 +188,7 @@ class PendingArtistController extends Controller
             try {
 
                 $user = new User();
+                $user->name = $pendingArtist->first_name.' '.$pendingArtist->last_name;
                 $user->email = $pendingArtist->email;
                 $user->phone = $pendingArtist->phone;
                 $user->password = $pendingArtist->password;
@@ -232,9 +234,7 @@ class PendingArtistController extends Controller
 
                             $code = 200;
                             $type = 'success';
-                            $msg = "Artist deleted successfully";
-
-                            $type = 'success';
+                            $msg = "Artist approved Successfully! ";
                             Session::flash($type, $msg);
                             //return redirect('index');
                             return true;
@@ -336,4 +336,12 @@ class PendingArtistController extends Controller
             return false;
         }
     }
+
+    /*public function searchPendingArtist($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['pendingArtists'] = PendingArtist::where([['is_active','0'],['role','artist'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','0'],['role','artist'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        //$data['searchedArtists'] = PendingArtist::where('name', 'LIKE', "{$searchInput}")->orWhere('phone', 'LIKE', "{$searchInput}")->orderBy('created_at', 'desc')->get();
+        return view('admin/user/pendingArtists', $data)->render();
+    }*/
 }

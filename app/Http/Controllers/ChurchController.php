@@ -19,10 +19,15 @@ class ChurchController extends Controller
      */
     public function index()
     {
-       // return response()->json(Church::with('address')->get());
-        $data['title'] = "Church | Churches ";
-        $data['churches'] = Church::with('address')->get();
-        return view('admin/church/churches',$data);
+
+    }
+
+    public function churches(){
+
+        $data['title'] = 'Churches | Manage Churches';
+        $data['activeTab'] = 11;
+        return view('admin/church/addChurch',$data);
+
     }
 
     public function getChurches($offset, $pageNumber = null)
@@ -37,10 +42,11 @@ class ChurchController extends Controller
         } else {
             $data['pageNumber'] = $pageNumber;
         }
-       // return response()->json(Church::with('address')->get());
-        $data['title'] = "Church | Churches ";
+
         $data['churches'] = Church::with('address')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        return view('admin/church/churches',$data);
+
+
+        return view('admin/church/churches', $data)->render();
     }
 
     public function show($id)
@@ -50,11 +56,6 @@ class ChurchController extends Controller
         return view('church.viewChurch',$data);
     }
 
-    public function addChurch()
-    {
-        $data['title'] = 'Church | Add Church';
-        return view('admin/church/addChurch',$data);
-    }
 
     public function create(Request $request)
     {
@@ -91,7 +92,7 @@ class ChurchController extends Controller
                     $code = 201;
                     $type = 'success';
                     Session::flash($type, $msg);
-                    return redirect('Church/getChurches/0');
+                    return back();
 
                 }else{
                     $churchDelete = Church::where('user_id',$church->id)->delete();
@@ -189,7 +190,7 @@ class ChurchController extends Controller
                 $msg = "church deleted successfully";
 
                 Session::flash($type, $msg);
-                return redirect('Church/getChurches');
+                return back();
 
             } else {
                 $code = 500;
@@ -298,7 +299,7 @@ class ChurchController extends Controller
                 $msg = "Address deleted successfully";
 
                 Session::flash($type, $msg);
-                return redirect('index');
+                return back();
             } else {
                 $code = 500;
                 $type = "error";
@@ -321,6 +322,13 @@ class ChurchController extends Controller
     {
         $countChurches = Church::count();
         return $countChurches;
+    }
+
+    public function searchChurch($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchedChurches'] = Church::with('address')->where([['is_active','1'],['name', 'LIKE', "{$searchInput}"]])->orWhere([['is_active','1'],['phone', 'LIKE', "{$searchInput}"]])->orderBy('created_at', 'desc')->get();
+        return view('admin/church/searchChurch', $data)->render();
     }
 
 }

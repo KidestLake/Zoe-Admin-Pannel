@@ -33,9 +33,11 @@ class NewsController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = 'News | List Of News';
+        //$data['title'] = 'News | List Of News';
         $data['news'] = News::offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        return view('admin/news/news', $data);
+       // return view('admin/news/news', $data);
+        return view('admin/news/news', $data)->render();
+
     }
 
     public function show($id)
@@ -51,10 +53,11 @@ class NewsController extends Controller
         return view('news.viewNews', $data);
     }
 
-    public function addNews()
+    public function news()
     {
         //check if admin here................
-        $data['title'] = 'News | Add News';
+        $data['title'] = 'News | Manage News';
+        $data['activeTab'] = 11;
         return view('admin/news/addNews', $data);
     }
 
@@ -134,7 +137,11 @@ class NewsController extends Controller
             $data['news'] = $news;
             $type = 'success';
             Session::flash($type, $msg);
-            return redirect('News/getNews/0');
+
+            $data['title'] = 'News | Manage News';
+            $data['activeTab'] = 22;
+            return view('admin/news/addNews', $data);
+
         } else {
             $code = 500;
             $msg = "An error occured while creating news. Please try again.";
@@ -146,9 +153,9 @@ class NewsController extends Controller
 
     public function updateNews($id)
     {
-        $data['title'] = 'News | Update News';
+        //$data['title'] = 'News | Update News';
         $data['news'] = News::find($id);
-        return view('admin/news/updateNews', $data);
+        return view('admin/news/updateNews', $data)->render();
     }
 
     public function update($id, Request $request)
@@ -197,7 +204,7 @@ class NewsController extends Controller
                                     $data['news'] = $news;
                                     $type = 'success';
                                     Session::flash($type, $msg);
-                                    return redirect('News/getNews/0');
+                                    return back();
                                 } else {
                                     $code = 500;
                                     $msg = "An error occured while updating news. Please try again.";
@@ -237,7 +244,11 @@ class NewsController extends Controller
                         $data['news'] = $news;
                         $type = 'success';
                         Session::flash($type, $msg);
-                        return redirect('News/getNews/0');
+
+                        $data['title'] = 'News | Manage News';
+                        $data['activeTab'] = 22;
+                        return view('admin/news/addNews', $data);
+
                     } else {
                         $code = 500;
                         $msg = "An error occured while updating news. Please try again.";

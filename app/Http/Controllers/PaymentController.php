@@ -25,6 +25,27 @@ class PaymentController extends Controller
         //
     }
 
+    public function internationalPayments()
+    {
+        $data['title'] = 'Payments | International Payments';
+        $data['activeTab'] = 11;
+        return view('admin/payment/internationalPayments',$data);
+    }
+
+    public function localPayments()
+    {
+        $data['title'] = 'Payments | Local Payments';
+        $data['activeTab'] = 11;
+        return view('admin/payment/localPayments',$data);
+    }
+
+    public function telecomPayments()
+    {
+        $data['title'] = 'Payments | Telecom Payments';
+        $data['activeTab'] = 11;
+        return view('admin/payment/telecomPayments',$data);
+    }
+
     public function allInternationalPaymentsPayed(){
 
         $data['title'] = "Payment | International Payments ";
@@ -46,9 +67,9 @@ class PaymentController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-         $data['title'] = "Payment | International Payments ";
+         //$data['title'] = "Payment | International Payments ";
         $data['internationalPayments'] = InternationalPayment::with('user')->where('is_payed','1')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        return view('admin/payment/internationalPaymentsPayed',$data);
+        return view('admin/payment/internationalPaymentsPayed',$data)->render();
 
 
     }
@@ -76,9 +97,10 @@ class PaymentController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Payment | International Payments ";
+       // $data['title'] = "Payment | International Payments ";
         $data['internationalPayments'] = InternationalPayment::with('user')->where('is_payed','0')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        return view('admin/payment/internationalPaymentsNotPayed',$data);
+        //return view('admin/payment/internationalPaymentsNotPayed',$data);
+        return view('admin/payment/internationalPaymentsNotPayed',$data)->render();
     }
 
     public function allLocalPaymentsPayed(){
@@ -102,9 +124,10 @@ class PaymentController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Payment | Local Payments ";
+        //$data['title'] = "Payment | Local Payments ";
         $data['localPayments'] = LocalPayment::with('user')->where('is_payed','1')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        return view('admin/payment/localPaymentsPayed',$data);
+        //return view('admin/payment/localPaymentsPayed',$data);
+        return view('admin/payment/localPaymentsPayed',$data)->render();
 
     }
 
@@ -129,9 +152,10 @@ class PaymentController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Payment | Local Payments ";
+        //$data['title'] = "Payment | Local Payments ";
         $data['localPayments'] = LocalPayment::with('user')->where('is_payed','0')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        return view('admin/payment/localPaymentsNotPayed',$data);
+        //return view('admin/payment/localPaymentsNotPayed',$data);
+        return view('admin/payment/localPaymentsNotPayed',$data)->render();
 
     }
 
@@ -156,9 +180,10 @@ class PaymentController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Payment | Telecom Payments ";
+        //$data['title'] = "Payment | Telecom Payments ";
         $data['telecomPayments'] = TelecomPayment::with('user')->where('is_payed','1')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        return view('admin/payment/telecomPaymentsPayed',$data);
+        //return view('admin/payment/telecomPaymentsPayed',$data);
+        return view('admin/payment/telecomPaymentsPayed',$data)->render();
 
     }
 
@@ -182,9 +207,10 @@ class PaymentController extends Controller
             $data['pageNumber'] = $pageNumber;
         }
 
-        $data['title'] = "Payment | Telecom Payments ";
+       // $data['title'] = "Payment | Telecom Payments ";
         $data['telecomPayments'] = TelecomPayment::with('user')->where('is_payed','0')->offset($offset)->limit($limit)->orderBy('created_at', 'desc')->get();
-        return view('admin/payment/telecomPaymentsNotPayed',$data);
+        //return view('admin/payment/telecomPaymentsNotPayed',$data);
+        return view('admin/payment/telecomPaymentsNotPayed',$data)->render();
 
     }
 
@@ -225,5 +251,54 @@ class PaymentController extends Controller
         return $totalTPaymentNotPayed;
     }
 
+    public function searchIPayed($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchPayed'] = true;
+        $data['searchedPayments'] = InternationalPayment::with('user')->where('is_payed','1')->orderBy('created_at', 'desc')->get();
+        //$data['searchedPayments'] = InternationalPayment::get();
+        return view('admin/payment/searchPayment',$data)->render();
+    }
 
+    public function searchINotPayed($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchPayed'] = false;
+        $data['searchedPayments'] = InternationalPayment::with('user')->where('is_payed','0')->orderBy('created_at', 'desc')->get();
+        return view('admin/payment/searchPayment',$data)->render();
+    }
+
+    public function searchLPayed($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchPayed'] = true;
+        $data['searchedPayments'] = LocalPayment::with('user')->where('is_payed','1')->orderBy('created_at', 'desc')->get();
+        //$data['searchedPayments'] = InternationalPayment::get();
+        return view('admin/payment/searchPayment',$data)->render();
+    }
+
+    public function searchLNotPayed($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchPayed'] = false;
+        $data['searchedPayments'] = LocalPayment::with('user')->where('is_payed','0')->orderBy('created_at', 'desc')->get();
+        return view('admin/payment/searchPayment',$data)->render();
+    }
+
+    public function searchTPayed($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchPayed'] = true;
+        $data['searchedPayments'] = TelecomPayment::with('user')->where('is_payed','1')->orderBy('created_at', 'desc')->get();
+        //$data['searchedPayments'] = InternationalPayment::get();
+        return view('admin/payment/searchPayment',$data)->render();
+    }
+
+    public function searchTNotPayed($searchInput)
+    {
+        $data['searchInput'] = $searchInput;
+        $data['searchPayed'] = false;
+        $data['searchedPayments'] = TelecomPayment::with('user')->where('is_payed','0')->orderBy('created_at', 'desc')->get();
+        return view('admin/payment/searchPayment',$data)->render();
+    }
 }
