@@ -26,7 +26,7 @@ require __DIR__.'/auth.php';
 Route::get('/dashboard', 'DashboardController@dashboard');
 
 //Advertisement routes
-Route::get('Advertisement/addAdvertisement', 'AdvertisementController@addAdvertisement');
+/*Route::get('Advertisement/addAdvertisement', 'AdvertisementController@addAdvertisement');
 Route::post('Advertisement/createAdvertisement', 'AdvertisementController@create');
 Route::get('Advertisement/allActiveAdvertisements', 'AdvertisementController@allActiveAdvertisements');
 Route::get('Advertisement/activeAdvertisements/{offset}/{pageNumber?}', 'AdvertisementController@activeAdvertisements');
@@ -40,15 +40,32 @@ Route::get('Advertisement/activateAdvertisement/{id}', 'AdvertisementController@
 Route::post('Advertisement/changeDefaultAdBanner', 'AdvertisementController@changeDefaultAdBanner');
 Route::get('Advertisement/searchActiveAdvertisement/{searchInput}', 'AdvertisementController@searchActiveAdvertisement');
 Route::get('Advertisement/searchDeactivatedAdvertisement/{searchInput}', 'AdvertisementController@searchDeactivatedAdvertisement');
+Route::get('Advertisement/fetchActiveAdvertisements', 'AdvertisementController@fetchActiveAdvertisements');
+*/
+
+Route::get('advertisements/getAdvertisements', 'AdvertisementController@getAdvertisements');
+Route::post('advertisements/createAdvertisement', 'AdvertisementController@create');
+Route::get('advertisements/allActiveAdvertisements', 'AdvertisementController@allActiveAdvertisements');
+Route::get('advertisements/activeAdvertisements/{offset}/{pageNumber?}', 'AdvertisementController@activeAdvertisements');
+Route::get('advertisements/allDeactivatedAdvertisements', 'AdvertisementController@allDeactivatedAdvertisements');
+Route::get('advertisements/deactivatedAdvertisements/{offset}/{pageNumber?}', 'AdvertisementController@deactivatedAdvertisements');
+Route::get('advertisements/updateAdvertisement/{id}', 'AdvertisementController@updateAdvertisement');
+Route::put('advertisements/update/{id}/{activation?}', 'AdvertisementController@update');
+Route::get('advertisements/destroy/{id}', 'AdvertisementController@destroy');
+Route::get('advertisements/deactivateAdvertisement/{id}', 'AdvertisementController@deactivateAdvertisement');
+Route::get('advertisements/activateAdvertisement/{id}', 'AdvertisementController@activateAdvertisement');
+Route::post('advertisements/changeDefaultAdBanner', 'AdvertisementController@changeDefaultAdBanner');
+Route::get('advertisements/searchActiveAdvertisement/{searchInput}', 'AdvertisementController@searchActiveAdvertisement');
+Route::get('advertisements/searchDeactivatedAdvertisement/{searchInput}', 'AdvertisementController@searchDeactivatedAdvertisement');
+
 
 //News routes
-Route::get('News/addNews', 'NewsController@addNews');
-Route::get('News/getNews/{offset}/{pageNumber?}', 'NewsController@getNews');
-Route::get('News', 'NewsController@index');
-Route::post('News/createNews', 'NewsController@create');
-Route::get('News/delete/{id}', 'NewsController@delete');
-Route::get('News/updateNews/{id}', 'NewsController@updateNews');
-Route::post('News/update/{id}', 'NewsController@update');
+Route::get('news/', 'NewsController@news');
+Route::get('news/getNews/{offset}/{pageNumber?}', 'NewsController@getNews');
+Route::post('news/createNews', 'NewsController@create');
+Route::get('news/delete/{id}', 'NewsController@delete');
+Route::get('news/updateNews/{id}', 'NewsController@updateNews');
+Route::post('news/update/{id}', 'NewsController@update');
 
 /*Bank Account routes
 Route::get('Bank/banks', 'BankController@index');
@@ -61,53 +78,76 @@ Route::get('Bank/activateBankAccount/{id}', 'BankController@activateBankAccount'
 Route::get('Bank/deactivateBankAccount/{id}', 'BankController@deactivateBankAccount');*/
 
 //Payment routes
-Route::get('Payment/allInternationalPaymentsPayed', 'PaymentController@allInternationalPaymentsPayed');
-Route::get('Payment/internationalPaymentsPayed/{offset}/{pageNumber?}', 'PaymentController@internationalPaymentsPayed');
-Route::get('Payment/allInternationalPaymentsNotPayed', 'PaymentController@allInternationalPaymentsNotPayed');
-Route::get('Payment/internationalPaymentsNotPayed/{offset}/{pageNumber?}', 'PaymentController@internationalPaymentsNotPayed');
-Route::get('Payment/allLocalPaymentsPayed', 'PaymentController@allLocalPaymentsPayed');
-Route::get('Payment/localPaymentsPayed/{offset}/{pageNumber?}', 'PaymentController@localPaymentsPayed');
-Route::get('Payment/allLocalPaymentsNotPayed', 'PaymentController@allLocalPaymentsNotPayed');
-Route::get('Payment/localPaymentsNotPayed/{offset}/{pageNumber?}', 'PaymentController@localPaymentsNotPayed');
-Route::get('Payment/allTelecomPaymentsPayed', 'PaymentController@allTelecomPaymentsPayed');
-Route::get('Payment/telecomPaymentsPayed/{offset}/{pageNumber?}', 'PaymentController@telecomPaymentsPayed');
-Route::get('Payment/allTelecomPaymentsNotPayed', 'PaymentController@allTelecomPaymentsNotPayed');
-Route::get('Payment/telecomPaymentsNotPayed/{offset}/{pageNumber?}', 'PaymentController@telecomPaymentsNotPayed');
+Route::get('payments/internationalPayments', 'PaymentController@internationalPayments');
+Route::get('payments/localPayments', 'PaymentController@localPayments');
+Route::get('payments/telecomPayments', 'PaymentController@telecomPayments');
+Route::get('payments/internationalPaymentsPayed/{offset}/{pageNumber?}', 'PaymentController@internationalPaymentsPayed');
+Route::get('payments/internationalPaymentsNotPayed/{offset}/{pageNumber?}', 'PaymentController@internationalPaymentsNotPayed');
+Route::get('payments/localPaymentsPayed/{offset}/{pageNumber?}', 'PaymentController@localPaymentsPayed');
+Route::get('payments/localPaymentsNotPayed/{offset}/{pageNumber?}', 'PaymentController@localPaymentsNotPayed');
+Route::get('payments/telecomPaymentsPayed/{offset}/{pageNumber?}', 'PaymentController@telecomPaymentsPayed');
+Route::get('payments/telecomPaymentsNotPayed/{offset}/{pageNumber?}', 'PaymentController@telecomPaymentsNotPayed');
+
+Route::get('payments/searchINotPayed/{searchInput}', 'PaymentController@searchINotPayed');
+Route::get('payments/searchIPayed/{searchInput}', 'PaymentController@searchIPayed');
+
+Route::get('payments/searchLNotPayed/{searchInput}', 'PaymentController@searchLNotPayed');
+Route::get('payments/searchLPayed/{searchInput}', 'PaymentController@searchLPayed');
+
+Route::get('payments/searchTNotPayed/{searchInput}', 'PaymentController@searchTNotPayed');
+Route::get('payments/searchTPayed/{searchInput}', 'PaymentController@searchTPayed');
+
 
 //Users routes
-Route::get('User/allActiveArtists', 'UserController@allActiveArtists');
-Route::get('User/activeArtists/{offset}/{pageNumber?}', 'UserController@activeArtists');
-Route::get('User/allDeactivatedArtists', 'UserController@allDeactivatedArtists');
-Route::get('User/deactivatedArtists/{offset}/{pageNumber?}', 'UserController@deactivatedArtists');
-Route::get('User/allActiveClients', 'UserController@allActiveClients');
-Route::get('User/activeClients/{offset}/{pageNumber?}', 'UserController@activeClients');
-Route::get('User/allDeactivatedClients', 'UserController@allDeactivatedClients');
-Route::get('User/deactivatedClients/{offset}/{pageNumber?}', 'UserController@deactivatedClients');
-Route::get('User/allActiveAdmins', 'UserController@allActiveAdmins');
-Route::get('User/activeAdmins/{offset}/{pageNumber?}', 'UserController@activeAdmins');
-Route::get('User/allDeactivatedAdmins', 'UserController@allDeactivatedAdmins');
-Route::get('User/deactivatedAdmins/{offset}/{pageNumber?}', 'UserController@deactivatedAdmins');
-Route::get('User/activateUser/{id}', 'UserController@activateUser');
-Route::get('User/deactivateUser/{id}', 'UserController@deactivateUser');
-Route::get('User/deleteUser/{id}', 'UserController@destroy');
-Route::get('User/registerArtist', 'UserController@registerArtist');
-Route::post('User/addArtist', 'UserController@addArtist');
-Route::get('User/allActiveChurchAdministrators', 'UserController@allActiveChurchAdministrators');
-Route::get('User/activeChurchAdministrators/{offset}/{pageNumber?}', 'UserController@activeChurchAdministrators');
-Route::get('User/allDeactivatedChurchAdministrators', 'UserController@allDeactivatedChurchAdministrators');
-Route::get('User/deactivatedChurchAdministrators/{offset}/{pageNumber?}', 'UserController@deactivatedChurchAdministrators');
-Route::get('User/registerChurchAdmin', 'UserController@registerChurchAdmin');
-Route::post('User/addChurchAdmin', 'UserController@addChurchAdmin');
+Route::get('users/artists', 'UserController@artists');
+Route::get('users/clients', 'UserController@clients');
+Route::get('users/churchAdmins', 'UserController@churchAdmins');
+Route::get('users/allActiveArtists', 'UserController@allActiveArtists');
+Route::get('users/activeArtists/{offset}/{pageNumber?}', 'UserController@activeArtists');
+Route::get('users/allDeactivatedArtists', 'UserController@allDeactivatedArtists');
+Route::get('users/deactivatedArtists/{offset}/{pageNumber?}', 'UserController@deactivatedArtists');
+Route::get('users/allActiveClients', 'UserController@allActiveClients');
+Route::get('users/activeClients/{offset}/{pageNumber?}', 'UserController@activeClients');
+Route::get('users/allDeactivatedClients', 'UserController@allDeactivatedClients');
+Route::get('users/deactivatedClients/{offset}/{pageNumber?}', 'UserController@deactivatedClients');
+Route::get('users/allActiveAdmins', 'UserController@allActiveAdmins');
+Route::get('users/activeAdmins/{offset}/{pageNumber?}', 'UserController@activeAdmins');
+Route::get('users/allDeactivatedAdmins', 'UserController@allDeactivatedAdmins');
+Route::get('users/deactivatedAdmins/{offset}/{pageNumber?}', 'UserController@deactivatedAdmins');
+Route::get('users/activateUser/{id}', 'UserController@activateUser');
+Route::get('users/deactivateUser/{id}', 'UserController@deactivateUser');
+Route::get('users/deleteUser/{id}', 'UserController@destroy');
+Route::get('users/registerArtist', 'UserController@registerArtist');
+Route::post('users/addArtist', 'UserController@addArtist');
+Route::get('users/allActiveChurchAdministrators', 'UserController@allActiveChurchAdministrators');
+Route::get('users/activeChurchAdministrators/{offset}/{pageNumber?}', 'UserController@activeChurchAdministrators');
+Route::get('users/allDeactivatedChurchAdministrators', 'UserController@allDeactivatedChurchAdministrators');
+Route::get('users/deactivatedChurchAdministrators/{offset}/{pageNumber?}', 'UserController@deactivatedChurchAdministrators');
+Route::get('users/registerChurchAdmin', 'UserController@registerChurchAdmin');
+Route::post('users/addChurchAdmin', 'UserController@addChurchAdmin');
+
+Route::get('users/searchActiveArtist/{searchInput}', 'UserController@searchActiveArtist');
+Route::get('users/searchDeactivatedArtist/{searchInput}', 'UserController@searchDeactivatedArtist');
+
+Route::get('users/searchActiveClient/{searchInput}', 'UserController@searchActiveClient');
+Route::get('users/searchDeactivatedClient/{searchInput}', 'UserController@searchDeactivatedClient');
+
+Route::get('users/searchActiveChurchAdmin/{searchInput}', 'UserController@searchActiveChurchAdmin');
+Route::get('users/searchDeactivatedChurchAdmin/{searchInput}', 'UserController@searchDeactivatedChurchAdmin');
+
 
 //pending artist
-Route::get('PendingArtist/allPendingArtists', 'PendingArtistController@allPendingArtists');
-Route::get('PendingArtist/pendingArtists/{offset}/{pageNumber?}', 'PendingArtistController@pendingArtists');
-Route::get('PendingArtist/approveArtist/{id}', 'PendingArtistController@approveArtist');
-Route::get('PendingArtist/disApproveArtist/{id}', 'PendingArtistController@disApproveArtist');
+Route::get('pendingArtists/allPendingArtists', 'PendingArtistController@allPendingArtists');
+Route::get('pendingArtists/pendingArtists/{offset}/{pageNumber?}', 'PendingArtistController@pendingArtists');
+Route::get('pendingArtists/approveArtist/{id}', 'PendingArtistController@approveArtist');
+Route::get('pendingArtists/disApproveArtist/{id}', 'PendingArtistController@disApproveArtist');
+
+Route::get('pendingArtists/searchPendingArtist/{searchInput}', 'PendingArtistController@searchPendingArtist');
 
 //church routes
-Route::get('Church/addChurch', 'ChurchController@addChurch');
-Route::post('Church/create', 'ChurchController@create');
-Route::get('Church/index', 'ChurchController@index');
-Route::get('Church/getChurches/{offset}/{pageNumber?}', 'ChurchController@getChurches');
-Route::get('Church/destroy/{id}', 'ChurchController@destroy');
+Route::get('churches', 'ChurchController@churches');
+Route::post('churches/create', 'ChurchController@create');
+Route::get('churches/getChurches/{offset}/{pageNumber?}', 'ChurchController@getChurches');
+Route::get('churches/destroy/{id}', 'ChurchController@destroy');
+Route::get('churches/searchChurch/{searchInput}', 'ChurchController@searchChurch');
+

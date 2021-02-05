@@ -96,7 +96,7 @@
 
                                         @if ($offset == 0 || $offset < 0)
                                             <li class="page-item disabled">
-                                                <a class="page-link" href="#" tabindex="-1">
+                                                <a class="page-link" href="javascript:void(0);" tabindex="-1">
                                                     <span aria-hidden="true">&laquo;</span>
                                                     <span class="sr-only">Previous</span>
                                                 </a>
@@ -133,7 +133,7 @@
 
                                         @if ((($offset+$limit) == $totalDeactivatedAdmins) || (($offset+$limit) > $totalDeactivatedAdmins))
                                             <li class="page-item disabled">
-                                                <a class="page-link" href="#" tabindex="-1">
+                                                <a class="page-link" href="javascript:void(0);" tabindex="-1">
                                                     <span aria-hidden="true">&raquo;</span>
                                                     <span class="sr-only">Next</span>
                                                 </a>

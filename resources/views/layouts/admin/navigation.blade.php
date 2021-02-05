@@ -104,7 +104,7 @@
                   </li>
 
                   <li class="nav-item" id="advertisementList">
-                      <a href="/Advertisement/addAdvertisement" class="nav-link">
+                      <a href="/advertisements/getAdvertisements" class="nav-link">
                           <i class="nav-icon fas fa-ad"></i>
                           <p>
                               Advertisements
@@ -113,7 +113,7 @@
                   </li>
 
                   <li class="nav-item" id="newsList">
-                      <a href="/News/addNews" class="nav-link">
+                      <a href="/news" class="nav-link">
                           <i class="nav-icon fas fa-blog"></i>
                           <p>
                               News
@@ -132,18 +132,18 @@
                       </a>
                       <ul class="nav nav-treeview ml-4">
                           <li class="nav-item">
-                              <a href="/Payment/internationalPaymentsNotPayed/0" class="nav-link"
+                              <a href="/payments/internationalPayments" class="nav-link"
                                   id="internationalPaymentNav">
                                   <p>International Payments</p>
                               </a>
                           </li>
                           <li class="nav-item">
-                              <a href="/Payment/localPaymentsNotPayed/0" class="nav-link" id="localPaymentNav">
+                              <a href="/payments/localPayments" class="nav-link" id="localPaymentNav">
                                   <p>Local Payments</p>
                               </a>
                           </li>
                           <li class="nav-item">
-                              <a href="/Payment/telecomPaymentsNotPayed/0" class="nav-link" id="telecomPaymentNav">
+                              <a href="/payments/telecomPayments" class="nav-link" id="telecomPaymentNav">
                                   <p>Telecom Payments</p>
                               </a>
                           </li>
@@ -159,24 +159,24 @@
                           </p>
                       </a>
                       <ul class="nav nav-treeview ml-4">
-                          <li class="nav-item">
-                              <a href="/User/activeAdmins/0" class="nav-link" id="adminNav">
+                          <!--<li class="nav-item">
+                              <a href="/users/activeAdmins/0" class="nav-link" id="adminNav">
                                   <p>Administrators</p>
                               </a>
-                          </li>
+                          </li>-->
                           <li class="nav-item">
-                              <a href="/User/registerArtist" class="nav-link" id="artistNav">
+                              <a href="/users/artists" class="nav-link" id="artistNav">
                                   <p>Artists</p>
                               </a>
                           </li>
                           <li class="nav-item">
-                              <a href="/User/activeClients/0" class="nav-link" id="clientNav">
+                              <a href="/users/clients" class="nav-link" id="clientNav">
                                   <p>Clients</p>
                               </a>
                           </li>
 
                           <li class="nav-item">
-                              <a href="/User/registerChurchAdmin" class="nav-link" id="churchAdminNav">
+                              <a href="/users/churchAdmins" class="nav-link" id="churchAdminNav">
                                   <p>Church Administrators</p>
                               </a>
                           </li>
@@ -186,7 +186,7 @@
 
 
                   <li class="nav-item" id="churchList">
-                      <a href="/Church/addChurch" class="nav-link" id="churchNav">
+                      <a href="/churches" class="nav-link" id="churchNav">
                           <i class="nav-icon fas fa-church"></i>
                           <p>
                               Church
